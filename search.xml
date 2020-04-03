@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[Missing Semester in CS] Shell</title>
+    <url>/2020/04/01/MSC-shell/</url>
+    <content><![CDATA[<p>TODO: Description</p>
+<a id="more"></a>
+
+<h2 id="Exercise"><a href="#Exercise" class="headerlink" title="Exercise"></a>Exercise</h2><ol>
+<li>Create a new directory called <code>missing</code> under <code>/tmp</code>. </li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /tmp </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir missing</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Look up the <code>touch</code> program. The <code>man</code> program is your friend. </li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> man touch</span></span><br></pre></td></tr></table></figure>
+<p>Here is a <a href="https://unix.stackexchange.com/questions/109003/what-are-the-legitimate-uses-of-the-touch-command" target="_blank" rel="noopener">link</a> about discussion<br>of how to use touch. Except create a new file, it can change the<br>timestep to accomplish interesting task.</p>
+<ol start="3">
+<li>Use <code>touch</code> to create a new file called <code>semester</code> in <code>missing</code>.</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> touch semester</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>Write the following into that file, one line at a time:<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">curl --head --silent https://missing.csail.mit.edu</span><br></pre></td></tr></table></figure>
+The first line might be tricky to get working. It’s helpful to know that<br><code>#</code> starts a comment in Bash, and <code>!</code> has a special meaning even within<br>double-quoted (<code>&quot;</code>) strings. Bash treats single-quoted strings (<code>&#39;</code>)<br>differently: they will do the trick in this case. See the Bash<br><a href="https://www.gnu.org/software/bash/manual/html_node/Quoting.html" target="_blank" rel="noopener">quoting</a><br>manual page for more information.</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> \<span class="comment">#\!/bin/sh  &gt; semester</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"curl --head --silent https://missing.csail.mit.edu"</span> &gt;&gt; semester</span></span><br></pre></td></tr></table></figure>
+<p>What if we want to add these line at the beginning of the file? Here are<br>some <a href="https://superuser.com/questions/246837/how-do-i-add-text-to-the-beginning-of-a-file-in-bash" target="_blank" rel="noopener">solutions</a>.</p>
+<ol start="5">
+<li>Try to execute the file, i.e. type the path to the script (<code>./semester</code>)<br> into your shell and press enter. Understand why it doesn’t work by<br> consulting the output of <code>ls</code> (hint: look at the permission bits of the<br> file).</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls -l semester</span></span><br><span class="line">-rw-r--r-- 1 hcwang hcwang 51 Apr  1 23:35 semester</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>Run the command by explicitly starting the <code>sh</code> interpreter, and giving it<br> the file <code>semester</code> as the first argument, i.e. <code>sh semester</code>. Why does<br> this work, while <code>./semester</code> didn’t?</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sh semester </span></span><br><span class="line">HTTP/2 200 </span><br><span class="line">server: GitHub.com</span><br><span class="line">content-type: text/html; charset=utf-8</span><br><span class="line">......</span><br><span class="line">content-length: 6845</span><br></pre></td></tr></table></figure>
+<p>Why is that? When use <code>sh</code>, the system will call <code>dash</code> interpreter to <strong>read</strong> the file <code>semester</code>, where the reading is permitted. While <code>./semester</code> directly <strong>execute</strong> the file which does not has execution permission.</p>
+<ol start="7">
+<li><p>Look up the <code>chmod</code> program (e.g. use <code>man chmod</code>).</p>
+</li>
+<li><p>Use <code>chmod</code> to make it possible to run the command <code>./semester</code> rather than<br> having to type <code>sh semester</code>. How does your shell know that the file is<br> supposed to be interpreted using <code>sh</code>? See this page on the<br> <a href="https://en.wikipedia.org/wiki/Shebang_(Unix)" target="_blank" rel="noopener">shebang</a> line for more<br> information.</p>
+</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> chmod u+x semester</span></span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li><p>Use <code>|</code> and <code>&gt;</code> to write the “last modified” date output by<br><code>semester</code> into a file called <code>last-modified.txt</code> in your home<br>directory.</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./semester | grep <span class="string">"last modified"</span> &gt; last-modified.txt</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Write a command that reads out your laptop battery’s power level or your<br>desktop machine’s CPU temperature from <code>/sys</code>. Note: if you’re a macOS<br>user, your OS doesn’t have sysfs, so you can skip this exercise.</p>
+</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># for energy</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/class/power_supply/BAT0/energy_now</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/class/power_supply/BAT0/energy_full_design</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/class/power_supply/BAT0/energy_full</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># for cpu temperature</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /sys/devices/platform/coretemp.0/hwmon/hwmon?/temp*</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>tool</tag>
+        <tag>shell</tag>
+        <tag>bash</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Documentation of Hexo</title>
     <url>/2020/04/01/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. For problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
@@ -46,7 +111,8 @@
 </ul>
 <h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p>Now I am using vim to write the post. Although sometimes it took me a bit longer to edit, I feel I am doing faster and better. As the instructor in the course showed, <strong>it should take about 20 hours for us to get back the editing speed in a new editor</strong>. After 20 hours, every minute faster is the actual gain. </p>
 <p>Beside the speed increasing, using “hacker” tool may help us to code in a positive way: explore and learn to reduce repetitive actions. I guess that is the biggest reason that we use computer. Computers save us already great amount of time, but there are way more to save! I can feel that there are still a lot redundant and repetitve actions during the development, and that is the motivation for more tools to come. For us, it is the first step to keep searching and practicing the useful tools, breaking the fear of steep learning curve. It is the first 20 hours that hinges us to the more productive and hacking work style.</p>
-<p>Anyway, I will try to start. As a concrete action, I will post following up posts to finish the exercise in the course, and hopefully find more useful resources to add.</p>
+<p>Here is the <a href="https://missing.csail.mit.edu/about/" target="_blank" rel="noopener">motivation</a> from the course instructor, maybe one will get a more interesting point from there.</p>
+<p>Anyway, I will try to start. As a concrete action, I will post following up posts to finish the exercises in the course, and hopefully find more useful resources to add.</p>
 ]]></content>
       <categories>
         <category>Tools</category>
