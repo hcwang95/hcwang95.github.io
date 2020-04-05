@@ -2,10 +2,77 @@
 <search>
   <entry>
     <title>[Missing Semester in CS] Shell</title>
-    <url>/2020/04/01/MSC-shell/</url>
-    <content><![CDATA[<p>TODO: Description</p>
+    <url>/2020/04/05/MSC-shell-scripting/</url>
+    <content><![CDATA[<p>Description: TODO</p>
 <a id="more"></a>
 
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><ol>
+<li><p>Read <a href="http://man7.org/linux/man-pages/man1/ls.1.html" target="_blank" rel="noopener"><code>man ls</code></a> and write an <code>ls</code> command that lists files in the following manner</p>
+<ul>
+<li><p>Includes all files, including hidden files</p>
+</li>
+<li><p>Sizes are listed in human readable format (e.g. 454M instead of 454279954)</p>
+</li>
+<li><p>Files are ordered by recency</p>
+</li>
+<li><p>Output is colorized</p>
+<p>A sample output would look like this</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">-rw-r--r--   1<span class="built_in"> user group </span>1.1M Jan 14 09:53 baz</span><br><span class="line">drwxr-xr-x   5<span class="built_in"> user group </span> 160 Jan 14 09:53 .</span><br><span class="line">-rw-r--r--   1<span class="built_in"> user group </span> 514 Jan 14 06:42 bar</span><br><span class="line">-rw-r--r--   1<span class="built_in"> user group </span>106M Jan 13 12:12 foo</span><br><span class="line">drwx------+ 47<span class="built_in"> user group </span>1.5K Jan 12 18:08 <span class="built_in">..</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls -lath --color=auto</span></span><br></pre></td></tr></table></figure>
+<p> Usually the default in Ubuntu System, <code>ls</code> already refers to <code>ls --color=auto</code> for better visualization using <a href="http://linuxcommand.org/lc3_man_pages/aliash.html" target="_blank" rel="noopener">aliasing</a>. </p>
+<ol start="2">
+<li>Write bash functions  <code>marco</code> and <code>polo</code> that do the following.<br>Whenever you execute <code>marco</code> the current working directory should be saved in some manner, then when you execute <code>polo</code>, no matter what directory you are in, <code>polo</code> should <code>cd</code> you back to the directory where you executed <code>marco</code>.<br>For ease of debugging you can write the code in a file <code>marco.sh</code> and (re)load the definitions to your shell by executing <code>source marco.sh</code>.</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># bash variable setting and usage</span></span><br><span class="line"><span class="function"><span class="title">marco</span></span>() &#123;</span><br><span class="line">    <span class="built_in">export</span> MARCO=$(<span class="built_in">pwd</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">polo</span></span>() &#123;</span><br><span class="line">    <span class="built_in">cd</span> <span class="string">"<span class="variable">$MARCO</span>"</span> <span class="comment"># or cd $&#123;MARCO&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>Say you have a command that fails rarely. In order to debug it you need to capture its output but it can be time consuming to get a failure run.<br>Write a bash script that runs the following script until it fails and captures its standard output and error streams to files and prints everything at the end.<br>Bonus points if you can also report how many runs it took for the script to fail.</p>
+ <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">n=$(( RANDOM % 100 ))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ n -eq 42 ]]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">echo</span> <span class="string">"Something went wrong"</span></span><br><span class="line">   &gt;&amp;2 <span class="built_in">echo</span> <span class="string">"The error was using magic numbers"</span></span><br><span class="line">   <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Everything went according to plan"</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">count=0</span><br><span class="line">until [[ <span class="string">"$?"</span> -ne 0 ]];</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  count=$((count+1))</span><br><span class="line">  ./random.sh &amp;&gt; out.txt</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"found error after <span class="variable">$count</span> runs"</span></span><br><span class="line">cat out.txt</span><br></pre></td></tr></table></figure>
+
+<p>Some points interesting to check:</p>
+<p><code>n=$(( RANDOM % 100 ))</code><br>Check <a href="http://mywiki.wooledge.org/ArithmeticExpression" target="_blank" rel="noopener">math context</a> about how to do arithmetic calculations in bash script.</p>
+<p><code>if [[ n -eq 42 ]]</code><br>Check <a href="http://mywiki.wooledge.org/BashFAQ/031" target="_blank" rel="noopener">Test</a> for different test conditions syntax in bash.</p>
+<p><code>&quot;$?&quot;</code> Refers the exit code from last command.<br>Check <a href="https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html" target="_blank" rel="noopener">Special Variables</a> in bash.</p>
+<ol start="4">
+<li><p>As we covered in lecture <code>find</code>‘s <code>-exec</code> can be very powerful for performing operations over the files we are searching for.<br>However, what if we want to do something with <strong>all</strong> the files, like creating a zip file?<br>As you have seen so far commands will take input from both arguments and STDIN.<br>When piping commands, we are connecting STDOUT to STDIN, but some commands like <code>tar</code> take inputs from arguments.<br>To bridge this disconnect there’s the <a href="http://man7.org/linux/man-pages/man1/xargs.1.html" target="_blank" rel="noopener"><code>xargs</code></a> command which will execute a command using STDIN as arguments.<br>For example <code>ls | xargs rm</code> will delete the files in the current directory.</p>
+<p> Your task is to write a command that recursively finds all HTML files in the folder and makes a zip with them. Note that your command should work even if the files have spaces (hint: check <code>-d</code> flag for <code>xargs</code>)</p>
+<figure class="highlight console"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> find . -<span class="built_in">type</span> f -name <span class="string">"*.html"</span> | xargs -d <span class="string">'\n'</span>  tar -cvzf</span></span><br><span class="line">  archive.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>(Advanced) Write a command or script to recursively find the most recently modified file in a directory. More generally, can you list all files by recency?</p>
+</li>
+</ol>
+<p>Here is one of the answer from <a href="https://stackoverflow.com/questions/5566310/how-to-recursively-find-and-list-the-latest-modified-files-in-a-directory-with-s" target="_blank" rel="noopener">here</a>.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">find <span class="variable">$1</span> -<span class="built_in">type</span> f -<span class="built_in">exec</span> <span class="built_in">stat</span> --format <span class="string">'%Y :%y %n'</span> <span class="string">"&#123;&#125;"</span> \; | sort -nr | cut -d: -f2- | head -n1</span><br></pre></td></tr></table></figure>
+<p>Notes:</p>
+<p><code>sort -nr</code> only sorted by lexical order, but because now the lexical order matches the time order, we can use in this way.</p>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>tool</tag>
+        <tag>shell</tag>
+        <tag>bash</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Missing Semester in CS] Shell</title>
+    <url>/2020/04/01/MSC-shell/</url>
+    <content><![CDATA[<p>The first class introduces the terminal shell, and they mainly focus on Bash since it is the default in most platform. </p>
+<a id="more"></a>
+
+<h2 id="Brief"><a href="#Brief" class="headerlink" title="Brief"></a>Brief</h2><p>It is perfect for the beginners without any knowledge of shell. Starting from terminal basics to some basic commands in bash such as <code>echo</code> and <code>ls</code>, the class provides enough information for anyone to start to explore the shell system (I guess <code>man</code> is enough to start …). </p>
+<p>After going through the video and texts, we still need to figure out how to use more commands in order to grasp the basics of temrinal. I guess the most important experience for me is to search <strong>only when you need it</strong>. There are tons of commands to know if we want them all, and each commands has tons of options to explore. It turns to be extremely boring for me if I read without any motivation. If you want to know how to find a file, then you learn <code>find</code>, and if you need to change a batch of files’ names, you get to know <code>for loop</code> and probably <code>sed</code>.</p>
+<p>Another thing that might be helpful is, there are always many ways to finish one target. If you don’t like the top answer from <a href="https://stackoverflow.com/" target="_blank" rel="noopener">StackOverflow</a>, maybe the second one or some comments attracts you.</p>
 <h2 id="Exercise"><a href="#Exercise" class="headerlink" title="Exercise"></a>Exercise</h2><ol>
 <li>Create a new directory called <code>missing</code> under <code>/tmp</code>. </li>
 </ol>
