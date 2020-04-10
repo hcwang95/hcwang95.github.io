@@ -54,10 +54,10 @@ https://github.com/ctrlpvim/ctrlp.vim</code></li>
   <entry>
     <title>[Missing Semester in CS] Shell scripting and tools</title>
     <url>/2020/04/05/MSC-shell-scripting/</url>
-    <content><![CDATA[<h2 id="Brief"><a href="#Brief" class="headerlink" title="Brief"></a>Brief</h2><p>After going through the basic bash commands in the previous class, we will explore more in putting all sort of commands together into a bash script file. </p>
+    <content><![CDATA[<p>After going through the basic bash commands in the previous class, we will explore more in putting all sort of commands together into a bash script file. </p>
 <a id="more"></a>
 
-<p>There are a bunch of must-knows for writing the scripts introduced in the class. Here is the complete list to check if you all understand:</p>
+<h2 id="Brief"><a href="#Brief" class="headerlink" title="Brief"></a>Brief</h2><p>There are a bunch of must-knows for writing the scripts introduced in the class. Here is the complete list to check if you all understand:</p>
 <ul>
 <li>variables assignment (NO SPACES!)</li>
 <li>difference between strings enclosed with <code>&#39;</code> and <code>&quot;</code></li>
